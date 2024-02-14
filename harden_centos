@@ -1,0 +1,62 @@
+## Source:   https://github.com/C0nd4/CCDC-Blueteam-Manual
+
+# Overwrite harden.txt
+echo "" > harden.txt
+sudo yum update
+
+echo "Shadow"
+echo "**** Shadow ****" >> harden.txt
+sudo cat /etc/shadow >> harden.txt
+
+echo "SSH Keys"
+echo "" >> harden.txt && echo "**** SSH Keys ****" >> harden.txt
+sudo find / -name authorized_keys 2>/dev/null >> harden.txt
+sudo find / -name id_rsa 2>/dev/null >> harden.txt
+
+echo "Sudo Access"
+echo "" >> harden.txt && echo "**** Sudo Access ****" >> harden.txt
+sudo cat /etc/sudoers | grep -v '^#' | sed '/^$/d' >> harden.txt
+sudo cat /etc/sudoers.d/* | grep -v '^#' | sed '/^$/d' >> harden.txt
+# group is Debian, wheel is for RHEL (CentOS)
+sudo getent group wheel | cut -d: -f4 >> harden.txt
+
+echo "Passwd"
+echo "" >> harden.txt && echo "**** Passwd ****" >> harden.txt
+sudo cat /etc/passwd | grep :0: >> harden.txt
+# Exclude accounts for system processes and not for an intereactive login
+sudo cat /etc/passwd | grep -v /bin/false | grep -v /sbin/nologin >> harden.txt
+
+echo "Cron Jobs"
+echo "" >> harden.txt && echo "**** Cron Jobs ****" >> harden.txt
+sudo cat /etc/cron.d/* | grep -v '^#' | sed '/^$/d' >> harden.txt
+for user in $(cut -f1 -d: /etc/passwd > /dev/null); do echo $user && sudo crontab -u $user -l | grep -v '^#' >> harden.txt; done
+
+echo "SUID and SGID Files"
+echo "" >> harden.txt && echo "**** SUID Files for Review with GTFObins ****" >> harden.txt
+sudo find / -perm -4000 -print 2>/dev/null >> harden.txt
+echo "" >> harden.txt && echo "**** SGID Files for Review with GTFObins ****" >> harden.txt
+sudo find / -perm -2000 -print 2>/dev/null >> harden.txt
+
+echo "World-Writeable Files and Directories"
+echo "" >> harden.txt && echo "**** World Writeable Directories ****" >> harden.txt
+sudo find / -type d \( -perm -g+w -or -perm -o+w \) -exec ls -adl {} \; >> harden.txt
+echo "**** World Writeable Files ****" >> harden.txt
+sudo find / ! -path "*/proc/*" -perm -2 -type f -print 2>/dev/null >> harden.txt
+
+echo "Remove all services not critical for this machine with 'sudo systemctl [status/remove/disable] [service]'"
+echo "" >> harden.txt && echo "**** Services ****" >> harden.txt
+sudo ls /etc/systemd/system >> harden.txt
+sudo ls /etc/systemd/user >> harden.txt
+
+echo "Removing potentially malicious files"
+# Comment this out for development
+sudo yum remove socat nc ncat nmap netcat
+
+echo "Installing Auditd"
+sudo yum install auditd
+sudo systemctl start auditd
+sudo systemctl enable auditd
+echo "Done"
+echo "Run aureport for a summary"
+echo "Run ausearch <option>"
+aureport
