@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ "$(sudo firewall-cmd --state)" != "running" ]; then
+    echo "Firewall is not running."
+    exit
+fi
+
+active_zone=$(sudo firewall-cmd --get-active-zone | head -n 1)
+all_zones=$(sudo firewall-cmd --get-zones)
+outside_interface=$(ip -o addr show | awk '{print $2}' | uniq | grep -v "lo")
+
+if [[ -z "$active_zone" ]]; then
+    echo "Set active zone"
+    exit
+fi
+
+echo "Active Zone: $active_zone"
+echo "All Zones: $all_zones"
+echo "Outside Zone: $outside_interface"
+
+echo "Is this all correct? [Y/N]"
+read -r correct_input
+
+if [[ "$correct_input" == "N" || "$correct_input" == "n" ]]; then
+    exit
+fi
+
+sudo firewall-cmd --zone="$active_zone" --change-interface="$outside_interface"
+sudo firewall-cmd --runtime-to-permanent
+sudo firewall-cmd --zone="$active_zone" --permanent --add-service=ftp
+
+services=$(sudo firewall-cmd --zone="$active_zone" --list-service)
+
+if [[ "$services" == *"dhcpv6-client"* ]]; then
+    sudo firewall-cmd --zone="$active_zone" --remove-service=dhcpv6-client
+fi
+
+sudo firewall-cmd --runtime-to-permanent
+sudo firewall-cmd --zone=$active_zone --add-port=20/tcp
+sudo firewall-cmd --zone=$active_zone --add-port=21/tcp
+sudo firewall-cmd --zone=$active_zone --add-port=22/tcp
+sudo firewall-cmd --runtime-to-permanent
