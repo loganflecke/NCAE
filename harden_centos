@@ -2,7 +2,7 @@
 
 # Overwrite harden.txt
 echo "" > harden.txt
-sudo yum update
+sudo yum update -y
 
 echo "Shadow"
 echo "**** Shadow ****" >> harden.txt
@@ -53,7 +53,7 @@ echo "Removing potentially malicious files"
 sudo yum remove socat nc ncat nmap netcat
 
 echo "Installing Auditd"
-sudo yum install auditd
+sudo yum install auditd -y
 sudo systemctl start auditd
 sudo systemctl enable auditd
 echo "Done"
