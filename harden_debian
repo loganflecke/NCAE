@@ -2,7 +2,7 @@
 
 # Overwrite harden.txt
 echo "" > harden.txt
-sudo apt update
+sudo apt update -y
 
 echo "Shadow"
 echo "**** Shadow ****" >> harden.txt
@@ -53,7 +53,7 @@ echo "Removing potentially malicious files"
 sudo apt remove socat nc ncat nmap netcat
 
 echo "Installing Auditd"
-sudo apt install auditd
+sudo apt install auditd -y
 sudo systemctl start auditd
 sudo systemctl enable auditd
 echo "Done"
