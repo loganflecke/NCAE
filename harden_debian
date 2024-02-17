@@ -54,8 +54,24 @@ sudo apt remove socat nc ncat nmap netcat
 
 echo "Installing Auditd"
 sudo apt install auditd -y
+
+# Monitoring these files for modifications
+sudo auditctl -w /etc/passwd -p wa -k passwd_changes
+sudo auditctl -w /etc/shadow -p wa -k shadow_changes
+sudo auditctl -w /etc/ssh/sshd_config -p wa -k sshd_config_changes
+sudo auditctl -w /etc/sudoers -p wa -k sudoers_changes
+sudo auditctl -w /etc/cron.d/ -p wa -k cron_changes
+sudo auditctl -w /etc/crontab -p wa -k cron_changes
+sudo auditctl -w /etc/sysctl.conf -p wa -k sysctl_changes
+
+# Debian/Ubuntu Specific
+sudo auditctl -w /etc/apt/sources.list -p wa -k apt_sources_changes
+sudo auditctl -w /etc/default/grub -p wa -k grub_conf_changes
+sudo auditctl -w /etc/lightdm/lightdm.conf -p wa -k lightdm_conf_changes
+
 sudo systemctl start auditd
 sudo systemctl enable auditd
+
 echo "Done"
 echo "Run aureport for a summary"
 echo "Run ausearch <option>"
