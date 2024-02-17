@@ -71,7 +71,7 @@ sudo auditctl -w /etc/sysctl.conf -p wa -k sysctl_changes
 sudo auditctl -w /etc/hosts -p wa -k hosts_changes
 sudo auditctl -w /etc/yum.repos.d/ -p wa -k yum_repo_changes
 
-sudo systemctl start auditd
+sudo systemctl restart auditd
 sudo systemctl enable auditd
 echo "Done"
 echo "Run aureport for a summary"
