@@ -55,6 +55,12 @@ sudo apt remove socat nc ncat nmap netcat
 echo "Installing Auditd"
 sudo apt install auditd -y
 
+if [ -e /etc/audit/auditd.conf ]; then
+    sudo sed -i 's/name_format = NONE/name_format = HOSTNAME/' /etc/audit/auditd.conf
+else
+    echo "Replace NONE with HOSTNAME as name_format in auditd.conf file."
+fi
+
 # Monitoring these files for modifications
 sudo auditctl -w /etc/passwd -p wa -k passwd_changes
 sudo auditctl -w /etc/shadow -p wa -k shadow_changes
