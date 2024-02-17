@@ -75,7 +75,10 @@ sudo auditctl -w /etc/apt/sources.list -p wa -k apt_sources_changes
 sudo auditctl -w /etc/default/grub -p wa -k grub_conf_changes
 sudo auditctl -w /etc/lightdm/lightdm.conf -p wa -k lightdm_conf_changes
 
-sudo systemctl start auditd
+echo "Downloading ausearch_commands.txt"
+curl -O https://raw.githubusercontent.com/loganflecke/NCAE/main/ausearch_commands.txt
+
+sudo systemctl restart auditd
 sudo systemctl enable auditd
 
 echo "Done"
