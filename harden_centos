@@ -1,6 +1,3 @@
-## Source:   https://github.com/C0nd4/CCDC-Blueteam-Manual
-
-# Overwrite harden.txt
 echo "" > harden.txt
 sudo yum update -y
 
@@ -54,6 +51,19 @@ sudo yum remove socat nc ncat nmap netcat
 
 echo "Installing Auditd"
 sudo yum install auditd -y
+
+# Monitoring these files for modifications
+sudo auditctl -w /etc/passwd -p wa -k passwd_changes
+sudo auditctl -w /etc/shadow -p wa -k shadow_changes
+sudo auditctl -w /etc/ssh/sshd_config -p wa -k sshd_config_changes
+sudo auditctl -w /etc/sudoers -p wa -k sudoers_changes
+sudo auditctl -w /etc/cron.d/ -p wa -k cron_changes
+sudo auditctl -w /etc/crontab -p wa -k cron_changes
+sudo auditctl -w /etc/sysctl.conf -p wa -k sysctl_changes
+## CentOS Specific files
+sudo auditctl -w /etc/hosts -p wa -k hosts_changes
+sudo auditctl -w /etc/yum.repos.d/ -p wa -k yum_repo_changes
+
 sudo systemctl start auditd
 sudo systemctl enable auditd
 echo "Done"
