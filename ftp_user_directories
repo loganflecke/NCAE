@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Specify the target directory
+target_dir="/mnt/files"
+
+# Iterate through regular users in /etc/passwd and create a directory for each
+while IFS=: read -r username _ _ _ _ home_dir _; do
+    if [ -d "$home_dir" ]; then
+        user_dir="$target_dir/$username"
+        mkdir -p "$user_dir"
+        echo "Created directory: $user_dir"
+    else
+        echo "Skipping non-existent home directory for user: $username"
+    fi
+done < <(grep '/home/' /etc/passwd)
+
+echo "Script execution completed."
