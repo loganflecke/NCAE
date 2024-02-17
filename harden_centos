@@ -52,6 +52,12 @@ sudo yum remove socat nc ncat nmap netcat
 echo "Installing Auditd"
 sudo yum install auditd -y
 
+if [ -e /etc/audit/auditd.conf ]; then
+    sudo sed -i 's/name_format = NONE/name_format = HOSTNAME/' /etc/audit/auditd.conf
+else
+    echo "Replace NONE with HOSTNAME as name_format in auditd.conf file."
+fi
+
 # Monitoring these files for modifications
 sudo auditctl -w /etc/passwd -p wa -k passwd_changes
 sudo auditctl -w /etc/shadow -p wa -k shadow_changes
@@ -60,6 +66,7 @@ sudo auditctl -w /etc/sudoers -p wa -k sudoers_changes
 sudo auditctl -w /etc/cron.d/ -p wa -k cron_changes
 sudo auditctl -w /etc/crontab -p wa -k cron_changes
 sudo auditctl -w /etc/sysctl.conf -p wa -k sysctl_changes
+
 ## CentOS Specific files
 sudo auditctl -w /etc/hosts -p wa -k hosts_changes
 sudo auditctl -w /etc/yum.repos.d/ -p wa -k yum_repo_changes
