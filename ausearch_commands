@@ -1,0 +1,31 @@
+## Messages used with ausearch -m <message>
+USER_AUTH   # Successful and unsuccessful login attempts (SSH)
+USER_LOGIN  # User login on specified terminal
+ADD_USER    # User is added
+DEL_USER    # User is deleted
+ADD_GROUP   # Group is added
+DEL_GROUP   # Group is deleted
+ROLE_ASSIGN # Assign new permissions
+EXECVE      # Commands a user has executed 
+    sudo ausearch -m EXECVE | grep "EXECVE" to show the commands
+MODIFY      # Modifications to files and permissions (chmod)
+SOCKET      # Network-related events
+USER_CMD    # Use of "sudo"
+
+## Keys used with ausearch -k <key>
+passwd_changes      # change to /etc/passwd
+shadow_changes      # change to /etc/shadow
+sshd_config_changes # change to /etc/ssh/sshd_config
+sudoers_changes     # change to /etc/sudoers
+cron_changes        # change to /etc/cron.d/
+cron_changes        # change to /etc/crontab
+sysctl_changes      # change to /etc/sysctl.conf
+
+## CentOS Specific Keys
+hosts_changes       # change to /etc/hosts
+yum_repo_changes    # change to /etc/yum.repos.d/
+
+## Debian Specific Keys
+apt_sources_changes # change to /etc/apt/sources.list
+grub_conf_changes   # change to /etc/default/grub
+lightdm_changes     # change to /etc/lightdm/lightdm.conf
