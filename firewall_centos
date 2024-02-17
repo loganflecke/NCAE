@@ -36,7 +36,6 @@ fi
 
 sudo firewall-cmd --zone="$active_zone" --change-interface="$outside_interface"
 sudo firewall-cmd --runtime-to-permanent
-sudo firewall-cmd --zone="$active_zone" --permanent --add-service=ftp
 
 services=$(sudo firewall-cmd --zone="$active_zone" --list-service)
 
@@ -46,7 +45,7 @@ fi
 
 sudo firewall-cmd --runtime-to-permanent
 echo "Adding port 20, 21, 22"
-sudo firewall-cmd --zone=$active_zone --add-port=20/tcp
-sudo firewall-cmd --zone=$active_zone --add-port=21/tcp
-sudo firewall-cmd --zone=$active_zone --add-port=22/tcp
+sudo firewall-cmd --zone=$active_zone --add-port=20/tcp --permanent
+sudo firewall-cmd --zone=$active_zone --add-port=21/tcp --permanent
+sudo firewall-cmd --zone=$active_zone --add-port=22/tcp --permanent
 sudo firewall-cmd --runtime-to-permanent
