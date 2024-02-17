@@ -2,6 +2,10 @@
 
 ## Installation
 ```bash
+curl -O https://raw.githubusercontent.com/loganflecke/NCAE/main/harden_debian
+```
+or
+```bash
 git clone https://github.com/loganflecke/NCAE.git
 ```
 or
